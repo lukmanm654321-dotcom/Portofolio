@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lukman Maulana | Mobile Dev & Computer Vision Engineer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            900: '#312e81',
+                            accent: '#10b981'
+                        },
+                        darkbg: '#0b0f17',
+                        darkcard: '#131b2e',
+                        darkborder: '#1e293b'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f17;
+            color: #f3f4f6;
+        }
+
+        /* Ambient Glow Effects */
+        .glow-bg {
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .glow-accent {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Glassmorphism styling */
+        .glass-card {
+            background: rgba(19, 27, 46, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-nav {
+            background: rgba(11, 15, 23, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f17;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4f46e5;
+        }
+
+        /* Typing effect animation cursor */
+        .cursor-blink {
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden relative selection:bg-brand-500 selection:text-white">
+
+    <!-- Background Ambient Light Spheres -->
+    <div class="glow-bg top-10 left-1/4"></div>
+    <div class="glow-accent top-96 right-10"></div>
+    <div class="glow-bg bottom-1/3 left-10"></div>
+
+    <!-- Navigation Bar -->
+    <header class="fixed top-0 left-0 w-full z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#hero" class="flex items-center gap-2 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-accent flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand-500/20 transition-transform group-hover:scale-105">
+                    LM
+                </div>
+                <span class="font-extrabold text-xl tracking-tight text-white group-hover:text-brand-400 transition-colors">
+                    Lukman<span class="text-brand-accent">.dev</span>
+                </span>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="#about" class="text-sm font-medium text-gray-300 hover:text-white hover:text-brand-400 transition-colors">Tentang</a>
+                <a href="#skills" class="text-sm font-medium text-gray-300 hover:text-white hover:text-brand-400 transition-colors">Keahlian</a>
+                <a href="#projects" class="text-sm font-medium text-gray-300 hover:text-white hover:text-brand-400 transition-colors">Project</a>
+                <a href="#experience" class="text-sm font-medium text-gray-300 hover:text-white hover:text-brand-400 transition-colors">Pengalaman</a>
+                <a href="#contact" class="px-5 py-2.5 rounded-xl bg-brand-600 text-white font-medium text-sm hover:bg-brand-500 transition-all shadow-md shadow-brand-600/30 hover:shadow-brand-500/50 hover:-translate-y-0.5">
+                    Hubungi Saya
+                </a>
+            </nav>
+
+            <!-- Mobile Hamburger Toggle -->
+            <button id="menu-toggle" class="md:hidden text-gray-300 hover:text-white focus:outline-none p-2 rounded-lg hover:bg-white/5" aria-label="Toggle menu">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Drawer Navigation -->
+        <div id="mobile-menu" class="hidden md:hidden glass-card border-b border-gray-800 px-4 pt-2 pb-6 space-y-3">
+            <a href="#about" class="block py-2 text-base font-medium text-gray-300 hover:text-white">Tentang</a>
+            <a href="#skills" class="block py-2 text-base font-medium text-gray-300 hover:text-white">Keahlian</a>
+            <a href="#projects" class="block py-2 text-base font-medium text-gray-300 hover:text-white">Project</a>
+            <a href="#experience" class="block py-2 text-base font-medium text-gray-300 hover:text-white">Pengalaman</a>
+            <a href="#contact" class="block py-2.5 text-center rounded-xl bg-brand-600 text-white font-medium">Hubungi Saya</a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="min-h-screen pt-28 pb-16 flex items-center justify-center relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Left Info Column -->
+            <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-card border border-brand-500/30 text-brand-400 text-xs sm:text-sm font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
+                    Terbuka untuk Kolaborasi & Proyek Baru
+                </div>
+
+                <h1 class="text-4xl sm:text-6xl font-extrabold text-white tracking-tight leading-tight">
+                    Mengembangkan Inovasi <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-brand-500 to-brand-accent">
+                        Mobile & AI Terdepan
+                    </span>
+                </h1>
+
+                <p class="text-lg sm:text-xl text-gray-400 max-w-2xl font-light leading-relaxed">
+                    Halo, saya <strong class="text-white font-semibold">Lukman Maulana</strong>. Saya seorang Mobile Developer & Computer Vision Engineer yang berfokus pada pengembangan aplikasi Flutter dan pengintegrasian Machine Learning berbasis Edge AI.
+                </p>
+
+                <!-- Dynamic Typing Intro -->
+                <div class="text-base sm:text-lg font-mono text-gray-300 flex items-center justify-center lg:justify-start gap-2 h-8">
+                    <span class="text-brand-accent">&gt;</span>
+                    <span id="typed-text"></span><span class="cursor-blink text-brand-400">|</span>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                    <a href="#projects" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-brand-600 text-white font-semibold hover:bg-brand-500 transition-all shadow-lg shadow-brand-600/30 hover:shadow-brand-500/50 hover:-translate-y-0.5 text-center flex items-center justify-center gap-2">
+                        <span>Lihat Project</span>
+                        <i class="fa-solid fa-arrow-right text-sm"></i>
+                    </a>
+                    <a href="#contact" class="w-full sm:w-auto px-8 py-3.5 rounded-xl glass-card text-white font-semibold hover:bg-white/10 transition-all border border-gray-700 text-center">
+                        Hubungi Saya
+                    </a>
+                </div>
+
+                <!-- Quick Tech Badges -->
+                <div class="pt-6 border-t border-gray-800/80 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-gray-400 text-sm">
+                    <span class="flex items-center gap-2"><i class="fa-brands fa-flutter text-cyan-400"></i> Flutter</span>
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-brain text-purple-400"></i> YOLO & TFLite</span>
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-hands text-emerald-400"></i> Computer Vision</span>
+                    <span class="flex items-center gap-2"><i class="fa-brands fa-git-alt text-orange-500"></i> Git Workflow</span>
+                </div>
+            </div>
+
+            <!-- Right Interactive Avatar Card -->
+            <div class="lg:col-span-5 flex justify-center">
+                <div class="relative w-72 h-72 sm:w-96 sm:h-96">
+                    <div class="absolute inset-0 rounded-3xl bg-gradient-to-tr from-brand-600 to-brand-accent opacity-30 blur-2xl transform rotate-6"></div>
+                    
+                    <div class="relative w-full h-full glass-card rounded-3xl p-4 overflow-hidden border border-white/10 shadow-2xl flex flex-col items-center justify-center group">
+                        <img src="D:\Portofolio\assets\profil.jpeg"
+                             alt="Foto Lukman Maulana" 
+                             class="w-full h-full object-cover rounded-2xl grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105"
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x400/1e293b/818cf8?text=Lukman+Maulana';">
+                        
+                        <!-- Floating Badge 1 -->
+                        <div class="absolute top-6 -left-2 glass-card px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-3 border border-white/10">
+                            <div class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+                                <i class="fa-brands fa-flutter"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-400">Mobile Dev</p>
+                                <p class="text-sm font-bold text-white">Flutter & POS App</p>
+                            </div>
+                        </div>
+
+                        <!-- Floating Badge 2 -->
+                        <div class="absolute bottom-6 -right-2 glass-card px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-3 border border-white/10">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                                <i class="fa-solid fa-microchip"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-400">Edge Computing</p>
+                                <p class="text-sm font-bold text-white">YOLO & TFLite</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="py-20 relative border-t border-gray-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brand-400 mb-2">Tentang Saya</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">Menggabungkan Aplikasi Mobile Modern dengan Kecerdasan Buatan</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="glass-card p-8 rounded-2xl border border-white/5 hover:border-brand-500/40 transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-xl bg-brand-500/10 text-brand-400 flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Pengembangan Mobile Flutter</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Membangun aplikasi mobile Android/iOS yang cepat, intuitif, dan responsif dengan arsitektur bersih, manajemen data lokal (SQLite/SharedPreferences), serta integrasi REST API.
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="glass-card p-8 rounded-2xl border border-white/5 hover:border-brand-accent/40 transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-xl bg-brand-accent/10 text-brand-accent flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Computer Vision & Edge AI</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Mengembangkan model Computer Vision seperti deteksi objek YOLOv11 yang dioptimalkan untuk perangkat mobile menggunakan TensorFlow Lite untuk proses offline tanpa latensi.
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="glass-card p-8 rounded-2xl border border-white/5 hover:border-purple-500/40 transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-store"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Solusi Bisnis & UMKM</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Merancang sistem digitalisasi seperti aplikasi Kasir/POS untuk UMKM lokal dengan fitur katalog otomatis, manajemen persediaan bahan, dan otomasi pemasaran.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Philosophy Banner -->
+            <div class="mt-12 glass-card p-8 rounded-2xl border border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="space-y-2">
+                    <h4 class="text-lg font-bold text-white">Prinsip Pengembangan</h4>
+                    <p class="text-gray-400 text-sm max-w-3xl">
+                        "Setiap solusi yang dibangun harus menyelesaikan masalah riil secara efisien—mulai dari kemudahan transaksi kasir UMKM hingga aksesibilitas deteksi bahasa isyarat menggunakan Artificial Intelligence secara offline."
+                    </p>
+                </div>
+                <div class="flex gap-4 shrink-0">
+                    <div class="text-center px-4 py-2 rounded-xl bg-white/5 border border-white/5">
+                        <span class="block text-2xl font-extrabold text-brand-400">36</span>
+                        <span class="text-xs text-gray-400">Kelas BISINDO</span>
+                    </div>
+                    <div class="text-center px-4 py-2 rounded-xl bg-white/5 border border-white/5">
+                        <span class="block text-2xl font-extrabold text-brand-accent">100%</span>
+                        <span class="text-xs text-gray-400">Offline Inference</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SKILLS SECTION -->
+    <section id="skills" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brand-accent mb-2">Tingkat Keahlian</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">Skill & Tech Stack Utama</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Skill Category 1 -->
+                <div class="glass-card p-8 rounded-2xl space-y-6">
+                    <h3 class="text-xl font-bold text-white flex items-center gap-3">
+                        <i class="fa-solid fa-mobile-button text-brand-400"></i> Mobile App Development
+                    </h3>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm font-semibold">
+                            <span class="text-gray-300">Flutter & Dart Framework</span>
+                            <span class="text-brand-400">92%</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-brand-600 to-cyan-400 rounded-full" style="width: 92%"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm font-semibold">
+                            <span class="text-gray-300">Mobile UI/UX & Responsive Layouts</span>
+                            <span class="text-brand-400">90%</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-brand-600 to-cyan-400 rounded-full" style="width: 90%"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm font-semibold">
+                            <span class="text-gray-300">Integrasi Firebase & Cloud Database</span>
+                            <span class="text-brand-400">88%</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-brand-600 to-cyan-400 rounded-full" style="width: 88%"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm font-semibold">
+                            <span class="text-gray-300">State Management & Architecture atau Offline Storage</span>
+                            <span class="text-brand-400">85%</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-brand-600 to-cyan-400 rounded-full" style="width: 85%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skill Category 2 -->
+                <div class="glass-card p-8 rounded-2xl space-y-6">
+                    <h3 class="text-xl font-bold text-white flex items-center gap-3">
+                        <i class="fa-solid fa-brain text-brand-accent"></i> Machine Learning & Computer Vision
+                    </h3>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm font-semibold">
+                            <span class="text-gray-300">Deteksi Objek YOLO (YOLOv11 / YOLOv12)</span>
+                            <span class="text-brand-accent">90%</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-brand-accent to-emerald-300 rounded-full" style="width: 90%"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm font-semibold">
+                            <span class="text-gray-300">TensorFlow Lite / Mobile Optimization</span>
+                            <span class="text-brand-accent">88%</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-brand-accent to-emerald-300 rounded-full" style="width: 88%"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm font-semibold">
+                            <span class="text-gray-300">Dataset Annotation (Roboflow & OpenCV)</span>
+                            <span class="text-brand-accent">86%</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-brand-accent to-emerald-300 rounded-full" style="width: 86%"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm font-semibold">
+                            <span class="text-gray-300">Python Data Science & Model Conversion</span>
+                            <span class="text-brand-accent">82%</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-brand-accent to-emerald-300 rounded-full" style="width: 82%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tech Stack Tags -->
+            <div class="mt-12 text-center">
+                <p class="text-sm font-semibold text-gray-400 mb-6">TEKNOLOGI & TOOLS YANG DIGUNAKAN</p>
+                <div class="flex flex-wrap items-center justify-center gap-3">
+                    <span class="px-4 py-2 rounded-xl glass-card text-xs font-semibold text-gray-200 border border-white/10 hover:border-brand-400 transition-colors">Flutter</span>
+                    <span class="px-4 py-2 rounded-xl glass-card text-xs font-semibold text-gray-200 border border-white/10 hover:border-brand-400 transition-colors">Dart</span>
+                    <span class="px-4 py-2 rounded-xl glass-card text-xs font-semibold text-gray-200 border border-white/10 hover:border-brand-400 transition-colors">TensorFlow Lite</span>
+                    <span class="px-4 py-2 rounded-xl glass-card text-xs font-semibold text-gray-200 border border-white/10 hover:border-brand-400 transition-colors">YOLOv11</span>
+                    <span class="px-4 py-2 rounded-xl glass-card text-xs font-semibold text-gray-200 border border-white/10 hover:border-brand-400 transition-colors">Roboflow</span>
+                    <span class="px-4 py-2 rounded-xl glass-card text-xs font-semibold text-gray-200 border border-white/10 hover:border-brand-400 transition-colors">Python</span>
+                    <span class="px-4 py-2 rounded-xl glass-card text-xs font-semibold text-gray-200 border border-white/10 hover:border-brand-400 transition-colors">Git / GitHub</span>
+                    <span class="px-4 py-2 rounded-xl glass-card text-xs font-semibold text-gray-200 border border-white/10 hover:border-brand-400 transition-colors">Firebase</span>
+                    <span class="px-4 py-2 rounded-xl glass-card text-xs font-semibold text-gray-200 border border-white/10 hover:border-brand-400 transition-colors">Firestore</span>
+                    <span class="px-4 py-2 rounded-xl glass-card text-xs font-semibold text-gray-200 border border-white/10 hover:border-brand-400 transition-colors">Android Studio</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECTS SECTION -->
+    <section id="projects" class="py-20 relative border-t border-gray-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brand-400 mb-2">Portofolio</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">Project Unggulan</p>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="flex items-center justify-center gap-3 mb-12 flex-wrap">
+                <button class="project-filter-btn px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold glass-card border border-brand-500 bg-brand-600 text-white transition-all" data-filter="all">Semua Project</button>
+                <button class="project-filter-btn px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold glass-card border border-white/10 text-gray-400 hover:text-white hover:border-white/20 transition-all" data-filter="mobile">Aplikasi Mobile</button>
+                <button class="project-filter-btn px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold glass-card border border-white/10 text-gray-400 hover:text-white hover:border-white/20 transition-all" data-filter="ml">Machine Learning</button>
+            </div>
+
+            <!-- Projects Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto" id="projects-container">
+
+                <!-- Project Card 1: Angkringan Warlok -->
+                <div class="project-card glass-card rounded-2xl overflow-hidden border border-white/10 flex flex-col group hover:border-brand-500/50 transition-all duration-300" data-category="mobile">
+                    <div class="relative h-56 overflow-hidden bg-gray-900">
+                        <img src="D:\Portofolio\assets\angkringan.png" 
+                             alt="Angkringan Warlok App" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             onerror="this.onerror=null; this.src='https://placehold.co/600x400/131b2e/ffffff?text=Angkringan+Warlok';">
+                        <span class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">Mobile / POS</span>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white group-hover:text-brand-400 transition-colors">Angkringan Warlok</h3>
+                            <p class="text-gray-400 text-sm mt-2 leading-relaxed">
+                                Aplikasi kasir dan manajemen persediaan UMKM angkringan berbasis mobile dengan fitur otomatisasi katalog produk, integrasi promosi media sosial, serta peringatan stok bahan baku otomatis.
+                            </p>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex flex-wrap gap-2 text-xs font-mono text-gray-300">
+                                <span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/5">Flutter</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/5">Dart</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/5">Firebase</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/5">Firestore</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/5">Realtime DB</span>
+                            </div>
+                            <div class="flex items-center justify-between pt-3 border-t border-gray-800">
+                                <button onclick="openModal(
+                                    'Angkringan Warlok - POS & Inventory System', 
+                                    'Aplikasi Kasir dan Manajemen Stok berbasis Flutter yang dirancang khusus untuk memenuhi kebutuhan UMKM Angkringan. Aplikasi ini menyederhanakan pencatatan transaksi kasir harian, manajemen bahan baku secara real-time, alert otomatis saat persediaan menipis, serta pembuatan materi promosi media sosial langsung dari katalog produk.', 
+                                    ['Flutter', 'Dart', 'Firebase', 'Firestore', 'Realtime DB'], 
+                                    'https://github.com/lukmanm654321-dotcom/Angkringan-Warlok'
+                                )" class="text-xs font-bold text-brand-400 hover:text-brand-500 flex items-center gap-1.5">
+                                    <span>Lihat Detail Lengkap</span>
+                                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                                </button>
+                                <a href="https://github.com" target="_blank" class="text-gray-400 hover:text-white transition-colors" aria-label="GitHub Repository"><i class="fa-brands fa-github text-xl"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Card 2: SIBINDO Real-Time Sign Language Detection -->
+                <div class="project-card glass-card rounded-2xl overflow-hidden border border-white/10 flex flex-col group hover:border-brand-accent/50 transition-all duration-300" data-category="ml mobile">
+                    <div class="relative h-56 overflow-hidden bg-gray-900">
+                        <img src="D:\Portofolio\assets\sibindo.png" 
+                             alt="SIBINDO Sign Language Detection" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             onerror="this.onerror=null; this.src='https://placehold.co/600x400/131b2e/ffffff?text=SIBINDO+Detection';">
+                        <span class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Machine Learning / Computer Vision</span>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white group-hover:text-brand-accent transition-colors">SIBINDO - Deteksi Bahasa Isyarat</h3>
+                            <p class="text-gray-400 text-sm mt-2 leading-relaxed">
+                                Aplikasi mobile deteksi bahasa isyarat Indonesia (BISINDO) secara real-time berbasis edge computing offline. Mengimplementasikan model YOLO (36 kelas: 26 huruf & 10 angka) yang dikonversi ke TensorFlow Lite.
+                            </p>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex flex-wrap gap-2 text-xs font-mono text-gray-300">
+                                <span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/5">Flutter</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/5">TensorFlow Lite</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/5">YOLO</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/5">Roboflow</span>
+                                <span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/5">Python</span>
+                            </div>
+                            <div class="flex items-center justify-between pt-3 border-t border-gray-800">
+                                <button onclick="openModal(
+                                    'SIBINDO - Real-Time Sign Language Detection App', 
+                                    'Aplikasi pendeteksi Bahasa Isyarat Indonesia (BISINDO) berbasis mobile yang beroperasi 100% secara offline tanpa jaringan internet. Menggunakan arsitektur model deteksi objek YOLO yang dilatih dengan Roboflow pada dataset 36 kelas (26 Abjad A-Z dan 10 Angka 0-9), kemudian dioptimalkan ke format TensorFlow Lite (.tflite) untuk performa tinggi dengan fps optimal di smartphone.', 
+                                    ['Flutter', 'TensorFlow Lite', 'YOLOv11', 'Roboflow', 'Python', 'Android'], 
+                                    'https://github.com/lukmanm654321-dotcom/sibindo'
+                                )" class="text-xs font-bold text-brand-accent hover:text-emerald-400 flex items-center gap-1.5">
+                                    <span>Lihat Detail Lengkap</span>
+                                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                                </button>
+                                <a href="https://github.com" target="_blank" class="text-gray-400 hover:text-white transition-colors" aria-label="GitHub Repository"><i class="fa-brands fa-github text-xl"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- EXPERIENCE SECTION -->
+    <section id="experience" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brand-accent mb-2">Rekam Jejak</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">Pengalaman & Pengujian Project</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto relative border-l-2 border-gray-800 space-y-12 pl-6 sm:pl-10">
+                
+                <!-- Timeline Item 1 -->
+                <div class="relative group">
+                    <div class="absolute -left-[31px] sm:-left-[47px] top-1.5 w-5 h-5 rounded-full bg-brand-accent border-4 border-darkbg group-hover:scale-125 transition-transform"></div>
+                    <div class="glass-card p-6 rounded-2xl border border-white/5 hover:border-brand-accent/30 transition-colors">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                            <h3 class="text-lg font-bold text-white">Riset & Pengujian SIBINDO Edge AI</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-brand-accent/10 text-brand-accent border border-brand-accent/20 w-fit">2026</span>
+                        </div>
+                        <p class="text-sm font-semibold text-gray-300 mb-4">Pengembangan Model Computer Vision Offline</p>
+                        <ul class="text-gray-400 text-sm space-y-2 list-disc list-inside leading-relaxed">
+                            <li>Mengumpulkan dan melakukan pelabelan dataset 36 kelas BISINDO menggunakan platform Roboflow.</li>
+                            <li>Melakukan pelatihan model YOLOv11 serta konversi model ke TFLite terkuantisasi agar ringan di smartphone.</li>
+                            <li>Menguji performa inferensi langsung pada kamera HP Android secara real-time.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 2 -->
+                <div class="relative group">
+                    <div class="absolute -left-[31px] sm:-left-[47px] top-1.5 w-5 h-5 rounded-full bg-brand-600 border-4 border-darkbg group-hover:scale-125 transition-transform"></div>
+                    <div class="glass-card p-6 rounded-2xl border border-white/5 hover:border-brand-500/30 transition-colors">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                            <h3 class="text-lg font-bold text-white">Pengembangan Aplikasi Angkringan Warlok</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-400 border border-brand-500/20 w-fit">2023 - 2024</span>
+                        </div>
+                        <p class="text-sm font-semibold text-gray-300 mb-4">Digitalisasi Bisnis Kasir UMKM</p>
+                        <ul class="text-gray-400 text-sm space-y-2 list-disc list-inside leading-relaxed">
+                            <li>Merancang antarmuka kasir mobile yang intuitif untuk kemudahan penginputan pesanan secara cepat.</li>
+                            <li>Membangun modul pencatatan persediaan bahan baku dengan sistem peringatan stok minim otomatis.</li>
+                            <li>Mengintegrasikan database Firebase untuk sinkronisasi data transaksi dan inventaris bahan baku secara real-time.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="py-20 relative border-t border-gray-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brand-400 mb-2">Kontak</h2>
+                <p class="text-3xl sm:text-4xl font-extrabold text-white">Mari Berdiskusi & Berkolaborasi</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                
+                <!-- Info Sidebar -->
+                <div class="lg:col-span-5 space-y-8">
+                    <div class="glass-card p-8 rounded-2xl space-y-6">
+                        <h3 class="text-xl font-bold text-white">Informasi Kontak</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Punya pertanyaan seputar project Flutter, penerapan model Machine Learning pada mobile, atau peluang kerja sama? Silakan hubungi saya melalui form atau kontak berikut!
+                        </p>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-brand-600/20 text-brand-400 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400">Email</p>
+                                    <p class="text-sm font-semibold text-white">lukman.m654321@gmail.com</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-brand-accent/20 text-brand-accent flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400">Lokasi</p>
+                                    <p class="text-sm font-semibold text-white">Indonesia (Terbuka untuk Remote)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Social Icons -->
+                        <div class="pt-6 border-t border-gray-800 flex items-center gap-4">
+                            <a href="https://github.com/lukmanm654321-dotcom" target="_blank" class="w-10 h-10 rounded-xl glass-card flex items-center justify-center text-gray-300 hover:text-white hover:border-brand-400 transition-colors" aria-label="GitHub">
+                                <i class="fa-brands fa-github text-lg"></i>
+                            </a>
+                            <a href="https://www.instagram.com/_llllucky1?dlrf=MTQ5NXB6bnVvZmFmZg==" target="_blank" class="w-10 h-10 rounded-xl glass-card flex items-center justify-center text-gray-300 hover:text-white hover:border-brand-400 transition-colors" aria-label="Instagram">
+                                <i class="fa-brands fa-instagram text-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="lg:col-span-7">
+                    <form id="contact-form" class="glass-card p-8 rounded-2xl space-y-6">
+                        <div id="form-alert" class="hidden p-4 rounded-xl text-sm font-medium"></div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label for="name" class="block text-xs font-semibold text-gray-300 uppercase">Nama Anda</label>
+                                <input type="text" id="name" required placeholder="Nama Lengkap" class="w-full px-4 py-3 rounded-xl bg-darkbg/80 border border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 transition-colors text-sm">
+                            </div>
+                            <div class="space-y-2">
+                                <label for="email" class="block text-xs font-semibold text-gray-300 uppercase">Email Anda</label>
+                                <input type="email" id="email" required placeholder="email@contoh.com" class="w-full px-4 py-3 rounded-xl bg-darkbg/80 border border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 transition-colors text-sm">
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="subject" class="block text-xs font-semibold text-gray-300 uppercase">Subjek</label>
+                            <input type="text" id="subject" required placeholder="Tujuan Pesan / Penawaran Kerjasama" class="w-full px-4 py-3 rounded-xl bg-darkbg/80 border border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 transition-colors text-sm">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="message" class="block text-xs font-semibold text-gray-300 uppercase">Pesan</label>
+                            <textarea id="message" rows="5" required placeholder="Tuliskan detail pesan atau pertanyaan Anda di sini..." class="w-full px-4 py-3 rounded-xl bg-darkbg/80 border border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 transition-colors text-sm resize-none"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-brand-600 to-brand-accent text-white font-bold text-sm hover:opacity-95 transition-all shadow-lg shadow-brand-500/20">
+                            Kirim Pesan
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-8 border-t border-gray-800 text-center text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto px-4">
+            <p>© 2026 Lukman Maulana. Portofolio Flutter & Computer Vision Mobile Developer.</p>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE PROJECT MODAL CONTAINER -->
+    <div id="project-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="glass-card max-w-xl w-full p-6 sm:p-8 rounded-3xl relative border border-white/10 space-y-6">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-lg" aria-label="Close modal">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h3 id="modal-title" class="text-2xl font-bold text-white"></h3>
+            <p id="modal-description" class="text-gray-300 text-sm leading-relaxed"></p>
+            <div>
+                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Teknologi yang Digunakan</h4>
+                <div id="modal-tech" class="flex flex-wrap gap-2"></div>
+            </div>
+            <div class="pt-4 flex justify-end gap-4 border-t border-gray-800">
+                <a id="modal-github" href="#" target="_blank" class="px-5 py-2.5 rounded-xl glass-card text-xs font-bold text-white hover:bg-white/10 flex items-center gap-2">
+                    <i class="fa-brands fa-github"></i> Repository GitHub
+                </a>
+                <button onclick="closeModal()" class="px-5 py-2.5 rounded-xl bg-brand-600 text-xs font-bold text-white hover:bg-brand-500">
+                    Tutup Preview
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Typing Dynamic Animation
+        const phrases = [
+            "Developer Aplikasi Mobile Flutter",
+            "Computer Vision & Edge AI Engineer",
+            "Pengembang System POS Angkringan Warlok",
+            "Inovator Deteksi BISINDO Offline"
+        ];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typedTextElement = document.getElementById('typed-text');
+
+        function typeEffect() {
+            const currentPhrase = phrases[phraseIndex];
+            
+            if (isDeleting) {
+                typedTextElement.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typedTextElement.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 40 : 80;
+
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                typeSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                typeSpeed = 400;
+            }
+
+            setTimeout(typeEffect, typeSpeed);
+        }
+
+        // Mobile Menu Toggle
+        const menuToggleBtn = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuToggleBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Portfolio Filtering
+        const filterBtns = document.querySelectorAll('.project-filter-btn');
+        const projectCards = document.querySelectorAll('.project-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-brand-600', 'text-white', 'border-brand-500');
+                    b.classList.add('border-white/10', 'text-gray-400');
+                });
+                btn.classList.add('bg-brand-600', 'text-white', 'border-brand-500');
+                btn.classList.remove('border-white/10', 'text-gray-400');
+
+                const filter = btn.getAttribute('data-filter');
+
+                projectCards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-category').includes(filter)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Project Modal Logic
+        const modal = document.getElementById('project-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDesc = document.getElementById('modal-description');
+        const modalTech = document.getElementById('modal-tech');
+        const modalGithub = document.getElementById('modal-github');
+
+        function openModal(title, desc, techArray, githubUrl) {
+            modalTitle.textContent = title;
+            modalDesc.textContent = desc;
+            modalGithub.href = githubUrl;
+            
+            modalTech.innerHTML = '';
+            techArray.forEach(tech => {
+                const tag = document.createElement('span');
+                tag.className = 'px-3 py-1 rounded-md text-xs font-mono bg-brand-500/10 text-brand-400 border border-brand-500/20';
+                tag.textContent = tech;
+                modalTech.appendChild(tag);
+            });
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
+
+        // Form Submission
+        const contactForm = document.getElementById('contact-form');
+        const formAlert = document.getElementById('form-alert');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            formAlert.className = 'p-4 rounded-xl text-sm font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+            formAlert.textContent = 'Terima kasih! Pesan Anda telah berhasil dikirim.';
+            formAlert.classList.remove('hidden');
+            contactForm.reset();
+
+            setTimeout(() => {
+                formAlert.classList.add('hidden');
+            }, 6000);
+        });
+
+        // Initialize Animation on Load
+        window.onload = function() {
+            typeEffect();
+        };
+    </script>
+</body>
+</html>
